@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import Filter from './Filter';
+import Movie from './components/movie/Movie';
 import './App.css';
 
 function App() {
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    fetchPopular();
+  }, []);
+
+  const fetchPopular = async () => {
+    const data = await fetch('https://api.themoviedb.org/3/movie/popular?api_key=56af74006ef3f9e7763d36ba4f519ab2&language=en-US&page=1');
+    const popularMovies = await data.json();
+    setMovies(popularMovies.results);
+  }
+  console.log(movies)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="filter__btns">
+        <Filter />
+      </div>
+      <div className="popular-movies">
+        {movies.map(movie => (
+          <Movie key={movie.id} item={movie} />
+        ))}
+      </div>
     </div>
   );
 }
